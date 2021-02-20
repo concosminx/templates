@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+  <!-- ================================  ORACLE  ================================================ -->
+  <!--    
+  <Resource name="jdbc/MAINDS" auth="Container" type="javax.sql.DataSource"
+            maxActive="10" maxIdle="10" maxWait="10000"
+            username="student" password="student"
+            driverClassName="oracle.jdbc.OracleDriver"
+            validationQuery="SELECT 1 FROM DUAL"
+            testOnBorrow="true"
+            url="jdbc:oracle:thin:@127.0.0.1:1521:xe"
+            rollbackOnReturn="true"
+            initialSize="1"
+            removeAbandoned="true"
+            removeAbandonedTimeout="5000"
+            propagateInterruptState="true"
+            factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+            jdbcInterceptors="SlowQueryReport(threshold=5000);StatementCache;ConnectionState" />
+  -->
+      
+  <!-- ================================  SQL SERVER  ================================================ -->
+  <!--    
+      
+  <Resource name="jdbc/MAINDS" auth="Container" type="javax.sql.DataSource"
+            maxActive="10" maxIdle="10" maxWait="10000"
+            username="student" password="student"
+            driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+            validationQuery="SELECT 1"
+            testOnBorrow="true"
+            url="jdbc:sqlserver://127.0.0.1\SQL2017:7077;DatabaseName=supadupafly;selectMethod=cursor" 
+            rollbackOnReturn="true"
+            initialSize="1"
+            removeAbandoned="true"
+            removeAbandonedTimeout="5000"
+            propagateInterruptState="true"
+            factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+            jdbcInterceptors="SlowQueryReport(threshold=5000);StatementCache;ConnectionState"/>
+  -->
+
+  <!-- ================================  POSTGRES  ================================================ -->
+  <Resource name="jdbc/MAINDS" auth="Container" type="javax.sql.DataSource"
+            maxActive="10" maxIdle="10" maxWait="10000"
+            username="postgres" password="postgres"
+            driverClassName="org.postgresql.Driver"
+            validationQuery="SELECT 1"
+            testOnBorrow="true"
+            url="jdbc:postgresql://127.0.0.1:5432/postgres"
+            rollbackOnReturn="true"
+            initialSize="1"
+            removeAbandoned="true"
+            removeAbandonedTimeout="5000"
+            propagateInterruptState="true"
+            factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" />
+</Context>

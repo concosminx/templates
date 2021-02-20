@@ -1,0 +1,8 @@
+apply from: rootProject.file('script.gradle')
+
+allprojects {
+  dependencies {
+    compile('org.springframework:spring-core:3.2.3.RELEASE') {transitive=true}
+  }
+}
+

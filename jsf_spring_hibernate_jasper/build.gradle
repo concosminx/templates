@@ -1,0 +1,162 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+
+group = 'com.nimsoc.template.jsf'
+
+sourceCompatibility = '1.8'
+targetCompatibility  = '1.8'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+repositories {
+  mavenCentral()
+  maven { 
+    url "http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/" 
+  }
+}
+
+dependencies {
+  compile "com.sun.faces:jsf-api:$jsfApi" 
+  compile "com.sun.faces:jsf-impl:$jsfApi"
+  compile 'jstl:jstl:1.2'
+  compile "org.springframework:spring-core:$springVersion"
+  compile "org.springframework:spring-context:$springVersion"
+  compile "org.springframework:spring-webmvc:$springVersion"
+  compile "org.springframework:spring-beans:$springVersion"
+  compile "org.springframework:spring-web:$springVersion"
+  compile "org.springframework:spring-orm:$springVersion"
+  compile "org.springframework:spring-tx:$springVersion"
+  
+  compile "org.hibernate:hibernate-core:$hibernateVersion"
+    
+  compile ('net.sf.jasperreports:jasperreports:6.1.0')
+  compile ('org.codehaus.groovy:groovy-all:2.3.6')
+  
+  providedCompile 'javax:javaee-api:6.0'
+  testImplementation 'junit:junit:4.13'
+}
+
+task deleteOldFilesTomcat(description :'Cleanup tomcat dirs and old app version') {
+  doLast {
+    /*check tomcat root dir*/
+    File tomcatRoot = new File(tomcatDir);
+    if(!tomcatRoot.exists()){
+      logger.lifecycle("invalid tomcat root dir: $tomcatDir");
+      return;
+    }
+    
+    /*cleanup tomcat dirs*/
+    ['logs', 'work', 'temp'].each { theDir -> 
+      File dir = new File(tomcatRoot, theDir)
+      if(dir.exists()){
+        dir.deleteDir();
+      }
+      dir.mkdirs();
+    }
+    
+    /*cleanup old app version*/
+    File webapps = new File(tomcatRoot,'webapps');
+    File expanded = new File(webapps, war.baseName);
+    if(expanded.exists()){
+      expanded.deleteDir();
+    }
+    File warfile=new File(webapps,war.baseName + ".war");
+    if(warfile.exists()){
+      warfile.delete();
+    }
+  }
+}
+
+
+
+task deployOnTomcat(dependsOn:['clean', 'war', 'deleteOldFilesTomcat'], description: 'Copy war file to tomcat webapps dir with overwrite') {
+  doLast {
+    File webapps=new File(tomcatDir,'webapps');
+    if(!webapps.exists()){
+      logger.lifecycle("invalid tomcat dir: $webapps");
+      return;
+    }
+    ant.copy(file: war.archivePath.absolutePath, todir:new File(tomcatDir,'webapps').absolutePath, overwrite:"true")
+  }
+}
+
+task deployPages(description:'Copy non compiled resources to webapp', type: Copy) {
+  from ('src/main/webapp') {
+    include '**/*.xhtml'
+    include '**/*.png'
+    include '**/*.jpg'
+  }
+  into new File(new File(tomcatDir,'webapps'), "jsf_spring_hibernate_jasper")
+}
+
+task compileJasper(description: 'Compiles jrxml files to jasper files') {
+  doLast {
+    File jasperDir = new File(project.buildDir,'jasper');
+    def rootPath = new File(project.projectDir,'src/main/webapp').absolutePath;
+    def jasperPath=jasperDir.absolutePath;
+    jasperDir.mkdirs();
+    def jasperFilesList=[];
+    def numberOfFiles=0;
+    def treejasper = project.fileTree(dir: rootPath, include: '**/*.jrxml')
+    treejasper.each{fis->
+      numberOfFiles++;
+      File jasper=new File(fis.absolutePath.replace(rootPath,jasperPath).replace('.jrxml','.jasper'))
+      if(!jasper.exists()){
+        jasperFilesList<< [src:fis, dest:jasper]
+      } else {
+        /*check is .jasper is outdated*/
+        if(jasper.lastModified() < fis.lastModified()){
+          jasperFilesList << [src:fis, dest:jasper]
+        }
+      }
+	}
+    if(jasperFilesList.size()==0){
+      it.didWork=false
+      return;
+    }
+    
+    def time=System.currentTimeMillis();
+    ArrayList<URL> listURL=new ArrayList<URL>();
+    def jarsDep = configurations.compile.copyRecursive();
+    jarsDep.each{fis->
+      listURL<<fis.toURI().toURL();
+    }
+    java.net.URLClassLoader cl=new java.net.URLClassLoader(listURL.toArray(new URL[listURL.size()]));
+    def clz = cl.loadClass('net.sf.jasperreports.engine.JasperCompileManager')
+    def method=clz.getMethod('compileReportToFile',[String.class,String.class]as Class[])
+    jasperFilesList.each{cUnit->
+      compileReport(method,project,cUnit); 
+    }
+    
+    cl.close()
+    
+    project.logger.lifecycle "Compiled reports for ${project.name}: ${jasperFilesList.size()} files out of $numberOfFiles in ${(System.currentTimeMillis()-time)} ms"
+  }
+}
+
+war.dependsOn(compileJasper)
+war {
+  /*copy .jasper files back to archive*/
+  from fileTree(new File(project.buildDir,'jasper'))
+}
+
+@groovy.transform.CompileStatic /*dynamic features not available anymore*/
+def compileReport(java.lang.reflect.Method method, org.gradle.api.Project project, Map<String,File> cUnit){
+  if(cUnit.dest.exists()){
+    cUnit.dest.delete();
+  }
+  if(!cUnit.dest.getParentFile().exists()){
+    cUnit.dest.getParentFile().mkdirs();
+  }
+  try{
+    if(project.logger.isInfoEnabled()){
+      project.logger.info("start compilation on report: ${cUnit.src.absolutePath}")
+    }
+    method.invoke(null,cUnit.src.absolutePath,cUnit.dest.absolutePath)
+  } catch(java.lang.reflect.InvocationTargetException e){
+    project.logger.warn("unable to compile report: ${cUnit.src.absolutePath}",e.getCause())
+  }
+ 
+}

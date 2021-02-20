@@ -1,0 +1,187 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+  <f:view>
+    <head>
+      <title>Shopping Cart</title>
+      <style>
+        .error {
+          color: red;
+        }
+        .appTable {   
+          border-collapse:collapse;
+          border:0px;
+        }
+
+        .appTableHeader {
+          text-align:center;
+          background:none repeat scroll 0 0 #B5B5B5;
+          border-bottom:1px solid #000000;  
+          padding:2px;
+        }
+
+        .appTableOddRow {
+          background:none repeat scroll 0 0 #FFFFFF;	
+        }
+
+        .appTableEvenRow {
+          background:none repeat scroll 0 0 #D3D3D3;
+        }
+
+        .prod1 {
+          text-align:left;
+        }
+        .prod2 {
+          padding-left: 15px;
+          text-align:left;
+        }
+        .prod3 {
+          text-align:right;
+        }
+        .prod4 {
+          text-align:left;
+          padding-left: 15px;
+          padding-right: 5px;
+        }
+
+        .c1 {
+          text-align:left;
+        }
+        .c2 {
+          padding-left: 15px;
+          text-align:left;
+        }
+        .c3 {
+          text-align:right;
+        }
+        .c4 {
+          text-align:right;
+        }
+        .c5 {
+          text-align:left;
+        }
+        .c6 {
+          text-align:left;
+        }
+        .c7 {
+          text-align:left;
+          padding-left: 15px;
+          padding-right: 5px;          
+        }
+
+
+      </style>
+    </head>
+    <h:body>
+      <h:form id="form">
+        <h4 style="text-align: center">
+          HTTP Session ID: ${session.id} 
+        </h4>
+        <center>
+          <table border="0">
+            <tr>
+              <td><center>Products</center></td>
+            </tr>
+            <tr>
+              <td>
+                <h:dataTable value = "#{productsBB.products}" var = "prod"
+                             styleClass = "appTable"
+                             headerClass = "appTableHeader"
+                             columnClasses = "prod1, prod2, prod3, prod4"
+                             rowClasses = "appTableOddRow,appTableEvenRow">
+
+                  <h:column>
+                    <f:facet name = "header">Code</f:facet>
+                      #{prod.code}
+                  </h:column>
+
+                  <h:column >    				
+                    <f:facet name = "header">Description</f:facet>    				
+                      #{prod.description}
+                  </h:column>
+
+                  <h:column>    				
+                    <f:facet name = "header">Price</f:facet>    				
+                      #{prod.price}
+                  </h:column>
+
+                  <h:column>    				
+                    <h:commandButton id="add" value="Adauga in Cos" binding="#{productsBB.addbutton}" action="#{productsBB.addProduct(prod)}" image="/img/add.png"/>
+                  </h:column>
+
+                  <h:column>    				
+                    <h:message for="add" styleClass="error"/>
+                  </h:column>
+                </h:dataTable>
+              </td>
+            </tr>
+          </table>
+
+          <table border="0" align="center" style="margin-top: 50px;">
+            <tr>
+              <td><center>Shopping Cart</center></td>
+            </tr>
+            <tr>
+              <td>
+                <h:dataTable value = "#{productsBB.shoppingList}" var = "item"
+                             styleClass = "appTable"
+                             columnClasses = "c1, c2, c3, c4, c5, c6, c7"
+                             headerClass = "appTableHeader"
+                             rowClasses = "appTableOddRow,appTableEvenRow">
+
+                  <h:column>
+                    <f:facet name = "header">Code</f:facet>
+                      #{item.code}
+                  </h:column>
+
+                  <h:column>    				
+                    <f:facet name = "header">Description</f:facet>    				
+                      #{item.description}
+                  </h:column>
+
+                  <h:column>    				
+                    <f:facet name = "header">Price</f:facet>    				
+                      #{item.price}
+                  </h:column>
+
+                  <h:column>    				
+                    <f:facet name = "header">Quantity</f:facet>
+                      #{item.quantity}
+                  </h:column>
+
+                  <h:column>    				  				
+                    <h:commandButton value="-" action="#{productsBB.decrementQuantity(item)}"/>
+                  </h:column>
+
+                  <h:column>    				  				
+                    <h:commandButton value="+" action="#{productsBB.incrementQuantity(item)}"/>
+                  </h:column>
+
+                  <h:column> 
+                    <f:facet name = "header"> 
+                      <h:commandButton value="Empty Cart" action="#{productsBB.emptyShoppingCart()}" image="/img/empty.png"/>
+                    </f:facet>                                        
+                    <h:commandButton value="Delete" action="#{productsBB.deleteShoppingCartItem(item)}" image="/img/minus.png"/>
+                  </h:column>
+                </h:dataTable>
+              </td>
+            </tr>
+          </table>
+
+          <table>
+            <tr>
+              <td style="padding-left: 10px">
+                <h:commandButton value="x" action="#{productsBB.invalidateSession()}" image="/img/logout.png" title="Invalidare Sesiune"/>
+              </td>
+              <td style="padding-left: 10px">
+                <h:outputLink target="_blank" value="#{facesContext.externalContext.requestContextPath}/GenerateReport">
+                  <h:graphicImage value="/img/pdf.png" title="Generate PDF Report"/> 
+                </h:outputLink>                  
+              </td>
+            </tr>
+          </table>
+        </center>
+      </h:form>
+    </h:body>
+  </f:view>
+</html>

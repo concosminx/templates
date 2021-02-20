@@ -1,0 +1,184 @@
+apply plugin: 'war'
+
+jar.enabled=false
+
+allprojects {
+  apply plugin: 'java'
+  apply plugin: 'maven'
+  apply plugin: 'maven-publish'
+	
+  String mavenGroupId = 'project-with-subprojects'
+  String mavenVersion = '1.0-SNAPSHOT'
+  
+  group = mavenGroupId
+  
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
+  [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+  
+  version = mavenVersion
+  
+  repositories {
+    mavenLocal()
+    mavenCentral()	
+  }
+	
+  test.enabled=false
+  testClasses.enabled=false
+  processTestResources.enabled=false
+  compileTestJava.enabled=false
+  javadoc.enabled=false
+  
+  jar.doFirst {
+    /*if you need something before jar task*/
+  }
+  
+  task deployPages(description:'Copy files under webapp to exapanded war folder in tomcat') {
+    doLast {
+      File repDir=new File(project.projectDir, webAppDirName);
+      String  destDirName=null;
+      if(project.parent==null){
+        destDirName=project.name
+      } else{
+        destDirName=project.parent.name
+      }
+      if(!repDir.exists()){
+        return;
+      } 
+      ant.copy(todir:"$tomcatDir"+destDirName,failonerror:false) {
+        ant.fileset(dir: repDir.absolutePath) {
+          ant.include(name: '**/*.*')
+        }
+      }
+    }
+  }
+
+  deployPages.onlyIf {
+    return new File(project.projectDir, webAppDirName).exists();
+  }
+}
+
+dependencies {
+  if(true){
+    subprojects.each{ sunprj ->
+      project.dependencies.add("compile",sunprj,{
+          transitive = false
+        })
+    }
+  }
+}
+
+war {
+  subprojects.each{ sunprj->
+    File war_Dest= new File(sunprj.projectDir, webAppDirName);
+    println("add subproject to war $war_Dest ? ${war_Dest.exists()}");
+    if(war_Dest.exists()){
+      from(sunprj.files("/src/main/webapp"));
+    }
+  }
+}
+
+/*
+  maven publish condiguration
+  see: https://docs.gradle.org/current/userguide/publishing_maven.html
+ */
+
+subprojects{
+  java {
+    withJavadocJar()
+    withSourcesJar()
+  }
+  publishing {
+    publications {
+      mavenJava(MavenPublication) {
+        from components.java
+        versionMapping {
+          usage('java-api') {
+            fromResolutionOf('runtimeClasspath')
+          }
+          usage('java-runtime') {
+            fromResolutionResult()
+          }
+        }
+        pom {
+          //name = 'My Library'
+          //description = 'A concise description of my library'
+          //url = 'http://www.example.com/library'
+          properties = [
+            myProp: "value",
+                    "prop.with.dots": "anotherValue"
+          ]
+          licenses {
+            license {
+              name = 'The Apache License, Version 2.0'
+              url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            }
+          }
+          developers {
+            developer {
+              id = 'johnd'
+              name = 'John Doe'
+              email = 'john.doe@example.com'
+            }
+          }
+        }
+      }
+    }
+    repositories {
+      maven {
+        url = "file:///D:/_DUMP2/"
+      }
+    }
+  }
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.web
+      pom {
+        properties = [
+          myProp: "value",
+                    "prop.with.dots": "anotherValue"
+        ]
+        licenses {
+          license {
+            name = 'The Apache License, Version 2.0'
+            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+          }
+        }
+        developers {
+          developer {
+            id = 'johnd'
+            name = 'John Doe'
+            email = 'john.doe@example.com'
+          }
+        }
+      }
+    }
+  }
+  repositories {
+    maven {
+      url = "file:///D:/_DUMP2/"
+    }
+  }
+}
+
+task deployWar(type: Sync,description:'Copy files in specificed folder'){
+  into "$tomcatDir"+project.name
+  with war
+}
+
+deployWar.doLast{
+  if(new File("$tomcatDir"+project.name+"/WEB-INF/web.xml").exists()){
+    println "redeploy: $tomcatDir ${project.name}"
+    ant.touch(file:"$tomcatDir"+project.name+"/WEB-INF/web.xml");
+  }
+}
+
+public String getPropertyValue(String key){
+  if(System.getenv(key)!=null){ 
+    return System.getenv(key);
+  }
+  return System.getProperty(key);
+}

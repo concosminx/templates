@@ -1,0 +1,16 @@
+rootProject.name = 'war-with-subprojects'
+def subDirs = rootDir.listFiles(new FileFilter() {
+  public boolean accept(File file) {
+    if (!file.isDirectory()) {
+      return false
+     }
+     return new File(file, 'build.gradle').isFile()
+    }
+  }
+);
+
+subDirs.each { dir ->
+  println "include dir name: ${dir.name}"
+  include dir.name
+}
+
