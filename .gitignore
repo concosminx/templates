@@ -19,3 +19,6 @@ event-sourcing/Journal.json
 
 ### Checkstyle ###
 .checkstyle
+/application/build/
+/spring_boot/.gradle/
+/spring_boot/build/

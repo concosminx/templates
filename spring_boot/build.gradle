@@ -1,0 +1,32 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  
+  dependencies {
+    classpath(
+      'org.springframework.boot:spring-boot-gradle-plugin:2.3.9.RELEASE',
+    )
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile(
+    'org.springframework.boot:spring-boot-starter-web:2.3.9.RELEASE',
+    'org.springframework.boot:spring-boot-starter-actuator:2.3.9.RELEASE',
+    'org.springframework.boot:spring-boot-starter-thymeleaf:2.3.9.RELEASE'
+  )
+  
+  testCompile(
+    'junit:junit:4.12',
+    'org.springframework.boot:spring-boot-starter-test:2.3.9.RELEASE'
+  )
+  
+}

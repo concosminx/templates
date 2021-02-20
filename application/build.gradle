@@ -1,0 +1,61 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = '1.8'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+if (!hasProperty('mainClass')) {
+  ext.mainClass = ''
+}
+
+mainClassName = 'com.nimsoc.application.Main'
+
+repositories {
+  mavenCentral()
+}
+
+sourceSets {
+  integrationTest {
+    java {
+      compileClasspath += main.output + test.output
+      runtimeClasspath += main.output + test.output
+      srcDir file('src/integration-test/java')
+    }
+    resources.srcDir file('src/integration-test/resources')
+  }
+}
+
+configurations {
+  integrationTestCompile.extendsFrom testCompile
+  integrationTestRuntime.extendsFrom testRuntime
+}
+
+task integrationTest(type: Test) {
+  testClassesDirs = sourceSets.integrationTest.output.classesDirs
+  classpath = sourceSets.integrationTest.runtimeClasspath
+  //outputs.upToDateWhen { false }
+}
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+dependencies {
+  compile fileTree(dir: 'lib', include: ['*.jar'])
+  compile 'log4j:log4j:1.2.17'
+  testCompile 'junit:junit:4.11'
+  integrationTestCompile 'org.assertj:assertj-core:3.0.0'
+}
+
+task copyLicense {
+  outputs.file new File("$buildDir/LICENSE")
+  doLast {
+    copy {
+      from "LICENSE"
+      into "$buildDir"
+    }
+  }
+}
+
+applicationDistribution.from(copyLicense) {
+  into ""
+}
