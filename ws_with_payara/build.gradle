@@ -1,0 +1,41 @@
+plugins {
+  id "fish.payara.micro-gradle-plugin" version "1.0.3"
+}
+
+payaraMicro {
+  payaraVersion = '5.2021.1'
+  deployWar = false
+  useUberJar = true
+  daemon = false
+  commandLineOptions = [port: 8081]
+  javaCommandLineOptions = [Dtest: 'test123', ea:true]
+}
+
+allprojects {
+  repositories {
+    mavenCentral()
+  }
+}
+
+subprojects {
+  apply plugin: 'java'
+}
+
+dependencies {
+  implementation group: 'com.h2database', name: 'h2', version: '1.4.200' 
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.2'
+  implementation (project(':micro-api')) {transitive=false;}
+  implementation (project(':micro-lib')) {transitive=false;}
+}
+
+subprojects {
+  plugins.withType(JavaPlugin) {
+    dependencies {
+      implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.2'
+      compileOnly group: 'javax', name: 'javaee-api', version: '7.0'
+      compileOnly group: 'fish.payara.extras', name: 'payara-embedded-web', version: '5.2021.1'
+    }
+  }
+}
+
+//run 

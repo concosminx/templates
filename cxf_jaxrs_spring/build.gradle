@@ -1,0 +1,42 @@
+plugins {
+  id "org.gretty" version "3.0.3"
+  id 'war'
+}
+
+
+repositories {
+  mavenCentral()
+  jcenter()
+}
+
+gretty {
+  servletContainer = 'tomcat9'
+}
+
+
+
+dependencies {
+  
+  compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+  
+  implementation ('org.apache.cxf:cxf-rt-frontend-jaxrs:3.4.3')
+  implementation ('org.apache.cxf:cxf-rt-features-logging:3.4.3')
+  implementation ('org.apache.cxf:cxf-rt-rs-sse:3.4.3')
+  implementation ('org.apache.cxf:cxf-rt-rs-client:3.4.3')
+  implementation ('org.springframework:spring-context:5.2.13.RELEASE')
+  implementation ('org.springframework:spring-web:5.2.13.RELEASE')
+  implementation ('org.springframework:spring-webmvc:5.2.13.RELEASE')
+  implementation group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-json-provider', version: '2.12.2'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.2'
+  implementation group: 'org.atmosphere', name: 'atmosphere-runtime', version: '2.6.4'
+  implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
+
+  //see https://stackoverflow.com/questions/48204141/replacements-for-deprecated-jpms-modules-with-java-ee-apis
+  implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
+  implementation group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.3'
+}
+
+task client (type: JavaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'com.nimsoc.spring.rs.sse.StatsClient'
+}

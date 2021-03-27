@@ -1,0 +1,36 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  
+  dependencies {
+    classpath(
+      "org.springframework.boot:spring-boot-gradle-plugin:$springBootVersion",
+    )
+  }
+}
+
+apply plugin: "java"
+apply plugin: "io.spring.dependency-management"
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation ("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
+  implementation ("io.micrometer:micrometer-core:$micrometerVersion")
+  implementation ("org.apache.cxf:cxf-spring-boot-starter-jaxws:$cxfVersion") {
+    exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+  }
+  
+  //see https://stackoverflow.com/questions/48204141/replacements-for-deprecated-jpms-modules-with-java-ee-apis
+  implementation ("jakarta.xml.ws:jakarta.xml.ws-api:$jaxwsVersion")
+  implementation ("com.sun.xml.ws:jaxws-rt:$jaxwsVersion")
+
+  testImplementation ("org.springframework.boot:spring-boot-starter-test:$springBootVersion") {
+    exclude group: "org.junit.jupiter", module: "junit-jupiter"
+  }
+  testImplementation ("org.springframework.boot:spring-boot-starter-web-services:$springBootVersion")
+  testImplementation ("junit:junit:$junitVersion")
+}

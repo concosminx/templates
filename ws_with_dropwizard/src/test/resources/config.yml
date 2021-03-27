@@ -1,0 +1,17 @@
+server:
+  applicationConnectors:
+  - type: http
+    port: 9000
+  adminConnectors:
+  - type: http
+    port: 9002
+database:
+  driverClass: org.h2.Driver
+  user: sa
+  password: sa
+  url: jdbc:h2:mem:app-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+  properties:
+    charSet: UTF-8
+    hibernate.hbm2ddl.auto: create
+
+authPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu++k4MglErjJoOyL+/w4rEsw01KNAsQ8Mq3SCZEMBKrahoLFBCBlmvaZv0z0eSj7pISoeKXH8PyeA8GEpALSXbkyuB0pPQ+WgeX+UUFUuATVQknTb5meSO9W2tOm7lAuyWzhYyVINe7+5AGvM2HfZvYq4ha8hDb3HTcbD3uOoQXq0Bhix9WSReEr8v96+y9qeLFxgrywc/XXbvKg0eOMsW6nOnNi+5rYK9/L+UanI67vmWzYOx/C85mI/Z0cJyvaHywJB7ceUlZjG0KHR4VPnU+gOhEy+XEW4OAJJbp7l+Gaaz/DLETujH89iKuFXnlqZU8Zniy56HFQ2nfZD6Kf2QIDAQAB

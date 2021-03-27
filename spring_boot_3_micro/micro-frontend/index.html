@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Example</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.1/css/bulma.min.css">
+  </head>
+  <body>
+  <section class="section" id="app">
+    
+	<div class="container">
+      <h1 class="title">
+        Partners List
+      </h1>
+  
+      <table class="table is-fullwidth">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Description</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="p in partners">
+            <th>{{ p.code }}</th>
+            <td>{{ p.description }}</td>
+            <td>{{ p.email }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="has-text-centered" v-if="partners.length == 0"><em>Empty list!</em></div>
+    </div>
+
+	
+	
+	<div class="container">
+        <h1 class="title">
+          Invoices List
+        </h1>
+        
+        <table class="table is-fullwidth">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Status</th>
+              <th>Total Price</th>
+              <th>Number of Items</th>
+              <th>Transaction Id</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="f in invoices">
+              <th>{{ f.id }}</th>
+              <td>{{ f.status }}</td>
+              <td>{{ f.totalPrice }}</td>
+              <td>{{ f.numberOfItems }}</td>
+              <td>{{ f.transactionId }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="has-text-centered" v-if="invoices.length == 0"><em>Empty list!</em></div>
+      </div>
+  </section>
+
+  <script src="https://unpkg.com/vue"></script>
+  <script src="main.js"></script>
+  </body>
+</html>

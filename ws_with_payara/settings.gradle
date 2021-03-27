@@ -1,0 +1,5 @@
+rootProject.name = 'ws_with_payara'
+
+include ':micro-api'
+include ':micro-lib'
+

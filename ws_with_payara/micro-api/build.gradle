@@ -1,0 +1,5 @@
+description = 'micro-api'
+
+dependencies {
+  compileOnly (project(':micro-lib')) {transitive=false;}
+}

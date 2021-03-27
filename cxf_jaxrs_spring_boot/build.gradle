@@ -1,0 +1,58 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  
+  dependencies {
+    classpath(
+      'org.springframework.boot:spring-boot-gradle-plugin:2.3.9.RELEASE',
+    )
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'io.spring.dependency-management'
+
+repositories {
+  mavenCentral()
+}
+
+application {
+  mainClass = 'com.nimsoc.cxf.rs.service.SampleRestApplication'
+}
+
+task client(type:JavaExec) {
+   main = 'com.nimsoc.cxf.rs.client.SampleRestClientApplication'
+   classpath = sourceSets.main.runtimeClasspath
+}
+
+dependencies {
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.3.9.RELEASE' 
+  implementation group: 'io.micrometer', name: 'micrometer-core', version: '1.6.5' 
+  implementation ('org.apache.cxf:cxf-spring-boot-starter-jaxrs:3.4.3') {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+  }
+  implementation group: 'org.webjars', name: 'swagger-ui', version: '3.45.0'
+  implementation group: 'org.apache.cxf', name: 'cxf-rt-rs-service-description-openapi-v3', version: '3.4.3'
+  implementation group: 'org.apache.cxf', name: 'cxf-rt-features-metrics', version: '3.4.3'
+  implementation ('org.apache.cxf:cxf-rt-features-logging:3.4.3')
+  
+  //see https://stackoverflow.com/questions/48204141/replacements-for-deprecated-jpms-modules-with-java-ee-apis
+  implementation group: 'jakarta.xml.ws', name: 'jakarta.xml.ws-api', version: '2.3.3'
+  //implementation group: 'com.sun.xml.ws', name: 'jaxws-rt', version: '2.3.3'
+  
+  testImplementation ('org.springframework.boot:spring-boot-starter-test:2.3.9.RELEASE') {
+    exclude group: 'org.junit.jupiter', module: 'junit-jupiter'
+  }
+  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.1'
+  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.1'
+}
+
+test {
+  useJUnitPlatform()
+  testLogging {
+    outputs.upToDateWhen {false}
+    showStandardStreams = true
+  }
+}

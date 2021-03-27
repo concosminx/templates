@@ -1,24 +1,13 @@
-target
-.metadata
-.settings
-.classpath
-.project
+#Folders
+**/.gradle/**
+**/build/**
+
+# Miscellaneous
 *.class
-
-### Package Files ###
-*.jar
-*.war
-*.ear
-.idea
-*.iml
-*.swp
-datanucleus.log
-/bin/
 *.log
-event-sourcing/Journal.json
-
-### Checkstyle ###
-.checkstyle
-/application/build/
-/spring_boot/.gradle/
-/spring_boot/build/
+*.pyc
+*.swp
+.DS_Store
+*.iml
+*.ipr
+*.iws

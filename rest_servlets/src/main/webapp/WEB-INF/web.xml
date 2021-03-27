@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<web-app>
+  <servlet>
+    <servlet-name>RouteServlet</servlet-name>
+    <servlet-class>com.nimsoc.servlets.rest.router.RouterServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>RouteServlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+</web-app>

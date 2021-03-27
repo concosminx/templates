@@ -1,0 +1,41 @@
+// https://www.dropwizard.io/en/latest/getting-started.html
+// https://github.com/dropwizard/dropwizard/blob/master/dropwizard-example/example.yml
+// https://codefresh.io/docs/docs/learn-by-example/java/gradle/
+// https://spring.io/guides/gs/spring-boot-docker/
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'com.nimsoc.dropwizard.api.rest.MainApplication'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  
+  implementation ("io.dropwizard:dropwizard-core:$dropWizardVersion")
+  implementation ("io.dropwizard:dropwizard-hibernate:$dropWizardVersion")
+  implementation ("io.dropwizard:dropwizard-auth:$dropWizardVersion")
+  implementation ("com.auth0:java-jwt:$javaJwtVersion")
+  implementation ("com.h2database:h2:$h2Version")
+  
+  testImplementation ("junit:junit:$junitVersion")
+  testImplementation ("io.dropwizard:dropwizard-testing:$dropWizardVersion")
+  testImplementation ("org.mockito:mockito-core:$mockitoVersion")
+  testImplementation ("org.assertj:assertj-core:$assertjVersion")
+  
+}
+
+test {
+  testLogging.showStandardStreams = true
+}
+
+project.ext {
+  configPath = "$rootProject.projectDir/config/"
+}
+
+run {
+  args 'server', configPath + 'config.yml'
+}
+
