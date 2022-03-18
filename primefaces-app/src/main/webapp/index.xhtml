@@ -1,0 +1,21 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+  <h:head>
+
+  </h:head>
+
+  <h:body>
+
+    <h:form>
+      Choose a number: <p:spinner value="#{testBean.number}"/>
+      <br />
+      Choose a date: <p:datePicker value="#{testBean.date}" showIcon="true"/>  
+      <br />
+      <p:commandButton action="#{testBean.doAction}" ajax="false" value="Submit" />
+    
+    </h:form>
+  </h:body>
+</html>

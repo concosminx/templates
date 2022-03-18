@@ -1,0 +1,83 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+
+group = 'com.nimsoc.template.jsf'
+
+sourceCompatibility = '1.8'
+targetCompatibility  = '1.8'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+repositories {
+  mavenCentral()    
+}
+
+dependencies {
+  implementation 'org.primefaces:primefaces:11.0.0'
+  
+  implementation 'jstl:jstl:1.2'
+  
+  implementation 'org.apache.myfaces.core:myfaces-api:2.3.9'
+  implementation 'org.apache.myfaces.core:myfaces-impl:2.3.9'
+
+  //https://docs.jboss.org/weld/reference/latest/en-US/html/environments.html
+  implementation 'org.jboss.weld.servlet:weld-servlet-core:3.1.8.Final'
+
+  //https://mvnrepository.com/artifact/org.primefaces/primefaces/11.0.0
+  providedCompile 'javax:javaee-api:8.0'
+}
+
+task deleteOldFilesTomcat(description :'Cleanup tomcat dirs and old app version') {
+  doLast {
+    /*check tomcat root dir*/
+    File tomcatRoot = new File(tomcatDir);
+    if(!tomcatRoot.exists()){
+      logger.lifecycle("invalid tomcat root dir: $tomcatDir");
+      return;
+    }
+    
+    /*cleanup tomcat dirs*/
+    ['logs', 'work', 'temp'].each { theDir -> 
+      File dir = new File(tomcatRoot, theDir)
+      if(dir.exists()){
+        dir.deleteDir();
+      }
+      dir.mkdirs();
+    }
+    
+    /*cleanup old app version*/
+    File webapps = new File(tomcatRoot,'webapps');
+    File expanded = new File(webapps, war.baseName);
+    if(expanded.exists()){
+      expanded.deleteDir();
+    }
+    File warfile=new File(webapps,war.baseName + ".war");
+    if(warfile.exists()){
+      warfile.delete();
+    }
+  }
+}
+
+
+
+task deployOnTomcat(dependsOn:['clean', 'war', 'deleteOldFilesTomcat'], description: 'Copy war file to tomcat webapps dir with overwrite') {
+  doLast {
+    File webapps=new File(tomcatDir,'webapps');
+    if(!webapps.exists()){
+      logger.lifecycle("invalid tomcat dir: $webapps");
+      return;
+    }
+    ant.copy(file: war.archivePath.absolutePath, todir:new File(tomcatDir,'webapps').absolutePath, overwrite:"true")
+  }
+}
+
+task deployPages(description:'Copy non compiled resources to webapp', type: Copy) {
+  from ('src/main/webapp') {
+    include '**/*.xhtml'
+    include '**/*.png'
+    include '**/*.jpg'
+  }
+  into new File(new File(tomcatDir,'webapps'), "prime")
+}
