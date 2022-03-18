@@ -12,27 +12,27 @@ targetCompatibility  = '1.8'
 
 repositories {
   mavenCentral()
-  maven { 
-    url "http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/" 
-  }
+  //maven {url "http://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/"}
+  maven {url 'https://jaspersoft.jfrog.io/artifactory/third-party-ce-artifacts/'}
+    
 }
 
 dependencies {
-  compile "com.sun.faces:jsf-api:$jsfApi" 
-  compile "com.sun.faces:jsf-impl:$jsfApi"
-  compile 'jstl:jstl:1.2'
-  compile "org.springframework:spring-core:$springVersion"
-  compile "org.springframework:spring-context:$springVersion"
-  compile "org.springframework:spring-webmvc:$springVersion"
-  compile "org.springframework:spring-beans:$springVersion"
-  compile "org.springframework:spring-web:$springVersion"
-  compile "org.springframework:spring-orm:$springVersion"
-  compile "org.springframework:spring-tx:$springVersion"
+  implementation "com.sun.faces:jsf-api:$jsfApi" 
+  implementation "com.sun.faces:jsf-impl:$jsfApi"
+  implementation 'jstl:jstl:1.2'
+  implementation "org.springframework:spring-core:$springVersion"
+  implementation "org.springframework:spring-context:$springVersion"
+  implementation "org.springframework:spring-webmvc:$springVersion"
+  implementation "org.springframework:spring-beans:$springVersion"
+  implementation "org.springframework:spring-web:$springVersion"
+  implementation "org.springframework:spring-orm:$springVersion"
+  implementation "org.springframework:spring-tx:$springVersion"
   
-  compile "org.hibernate:hibernate-core:$hibernateVersion"
+  implementation "org.hibernate:hibernate-core:$hibernateVersion"
     
-  compile ('net.sf.jasperreports:jasperreports:6.1.0')
-  compile ('org.codehaus.groovy:groovy-all:2.3.6')
+  implementation ('net.sf.jasperreports:jasperreports:6.1.0')
+  implementation ('org.codehaus.groovy:groovy-all:2.3.6')
   
   providedCompile 'javax:javaee-api:6.0'
   testImplementation 'junit:junit:4.13'
@@ -119,7 +119,7 @@ task compileJasper(description: 'Compiles jrxml files to jasper files') {
     
     def time=System.currentTimeMillis();
     ArrayList<URL> listURL=new ArrayList<URL>();
-    def jarsDep = configurations.compile.copyRecursive();
+    def jarsDep = configurations.runtimeClasspath.copyRecursive();
     jarsDep.each{fis->
       listURL<<fis.toURI().toURL();
     }
