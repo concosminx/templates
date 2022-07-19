@@ -1,4 +1,4 @@
-rootProject.name = 'ws_with_payara'
+rootProject.name = 'ws-with-payara'
 
 include ':micro-api'
 include ':micro-lib'
