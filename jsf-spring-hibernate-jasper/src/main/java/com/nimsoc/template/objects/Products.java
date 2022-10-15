@@ -1,14 +1,22 @@
 package com.nimsoc.template.objects;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
+@Entity(name = "Products")
+@Table(name = "PRODUCTS")
 public class Products implements Serializable {
 
-  int id;
-  String code;
-  String description;
-  double price;
+  @Column(name = "ID", nullable=false)
+  private int id;
+  private String code;
+  private String description;
+  private double price;
 
+  @Id
   public int getId() {
     return id;
   }
@@ -17,11 +25,7 @@ public class Products implements Serializable {
     this.id = id;
   }
 
-  @Override
-  public String toString() {
-    return "Products{" + "id=" + id + ", code=" + code + ", description=" + description + ", price=" + price + '}';
-  }
-
+  @Column(name = "CODE", nullable=false)
   public String getCode() {
     return code;
   }
@@ -30,6 +34,7 @@ public class Products implements Serializable {
     this.code = code;
   }
 
+  @Column(name = "DESCRIPTION", nullable=false)
   public String getDescription() {
     return description;
   }
@@ -38,6 +43,7 @@ public class Products implements Serializable {
     this.description = description;
   }
 
+  @Column(name = "PRICE", nullable=false)
   public double getPrice() {
     return price;
   }
@@ -46,7 +52,10 @@ public class Products implements Serializable {
     this.price = price;
   }
 
-  
+  @Override
+  public String toString() {
+    return "Products{" + "id=" + id + ", code=" + code + ", description=" + description + ", price=" + price + '}';
+  }
 
   
   

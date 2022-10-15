@@ -1,15 +1,18 @@
 package com.nimsoc.template.objects;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
+@Entity(name = "ShoppingCart")
+@Table(name = "SHOPPING_CART")
 public class ShoppingCart implements Serializable {
 
-  ShoppingCartPk pk;
-  double quantity;
-  
-  String code;
-  String description;
-  double price;
+  private ShoppingCartPk pk;
+  private double quantity;
+
+  private String code;
+  private String description;
+  private double price;
 
   public ShoppingCart() {
   }
@@ -19,6 +22,7 @@ public class ShoppingCart implements Serializable {
     this.quantity = quantity;
   }
 
+  @Id
   public ShoppingCartPk getPk() {
     return pk;
   }
@@ -27,6 +31,7 @@ public class ShoppingCart implements Serializable {
     this.pk = pk;
   }
 
+  @Column(name = "QUANTITY", nullable = false)
   public double getQuantity() {
     return quantity;
   }
@@ -35,6 +40,7 @@ public class ShoppingCart implements Serializable {
     this.quantity = quantity;
   }
 
+  @Transient
   public String getCode() {
     return code;
   }
@@ -43,6 +49,7 @@ public class ShoppingCart implements Serializable {
     this.code = code;
   }
 
+  @Transient
   public String getDescription() {
     return description;
   }
@@ -51,6 +58,7 @@ public class ShoppingCart implements Serializable {
     this.description = description;
   }
 
+  @Transient
   public double getPrice() {
     return price;
   }

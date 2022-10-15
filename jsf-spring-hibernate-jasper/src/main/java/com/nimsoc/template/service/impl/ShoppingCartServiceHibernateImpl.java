@@ -12,34 +12,23 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import com.nimsoc.template.service.ShoppingCartService;
 
 @Transactional
+@Service("shoppingCart")
 public class ShoppingCartServiceHibernateImpl implements ShoppingCartService {
 
-  DataSource dataSource;
-
-  public DataSource getDataSource() {
-    return dataSource;
-  }
-
-  public void setDataSource(DataSource dataSource) {
-    this.dataSource = dataSource;
-  }
-  GenerateReport psf;
   private static final Log log = LogFactory.getLog(ShoppingCartServiceHibernateImpl.class);
 
+  @Autowired
+  private DataSource dataSource;
+
+  @Autowired
   private SessionFactory sessionFactory;
-
-  public SessionFactory getSessionFactory() {
-    return sessionFactory;
-  }
-
-  public void setSessionFactory(SessionFactory sessionFactory) {
-    this.sessionFactory = sessionFactory;
-  }
 
   @Override
   public List<ShoppingCart> getShoppingList(String session_ID) {

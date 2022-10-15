@@ -4,7 +4,6 @@ jar.enabled=false
 
 allprojects {
   apply plugin: 'java'
-  apply plugin: 'maven'
   apply plugin: 'maven-publish'
 	
   String mavenGroupId = 'project-with-subprojects'
@@ -61,7 +60,7 @@ allprojects {
 dependencies {
   if(true){
     subprojects.each{ sunprj ->
-      project.dependencies.add("compile",sunprj,{
+      project.dependencies.add("implementation",sunprj,{
           transitive = false
         })
     }

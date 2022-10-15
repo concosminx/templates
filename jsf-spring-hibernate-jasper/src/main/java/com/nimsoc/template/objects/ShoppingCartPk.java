@@ -1,12 +1,15 @@
 package com.nimsoc.template.objects;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Embeddable
 public class ShoppingCartPk implements Serializable {
 
-  String sessionId;
-  int productId;
+  private String sessionId;
+  private int productId;
 
   public ShoppingCartPk() {
   }
@@ -16,6 +19,7 @@ public class ShoppingCartPk implements Serializable {
     this.productId = productId;
   }
 
+  @Column(name = "SESSION_ID", nullable = false)
   public String getSessionId() {
     return sessionId;
   }
@@ -24,6 +28,7 @@ public class ShoppingCartPk implements Serializable {
     this.sessionId = sessionId;
   }
 
+  @Column(name = "PRODUCT_ID", nullable = false)
   public int getProductId() {
     return productId;
   }

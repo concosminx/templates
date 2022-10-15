@@ -9,10 +9,21 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import com.nimsoc.template.service.ShoppingCartService;
 import com.nimsoc.template.service.ProductsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+
+@Component("productsBB")
+@Scope("session")
 public class ProductsBB {
 
+  @Autowired
+  @Qualifier("products")
   private ProductsService productsService;
+  @Autowired
+  @Qualifier("shoppingCart")
   private ShoppingCartService shoppingCartService;
   
   private transient UIComponent addbutton;
