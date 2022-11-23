@@ -1,0 +1,34 @@
+server:
+  port: 9192
+spring:
+  zipkin:
+    base-url: http://localhost:9411/
+  h2:
+    console:
+      enabled: true
+  application:
+    name: ORDER-SERVICE
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      uri:
+        - http://localhost:9196
+management:
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: info
+info:
+  application:
+    name: ${spring.application.name}
+    description: Order Service
+logging:
+  level:
+    root: info
+  file:
+    path: ./logs/
+#    name: micro.log
